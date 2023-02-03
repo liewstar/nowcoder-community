@@ -11,7 +11,8 @@ public enum HttpCodeEnum {
     REQUIRE_USERNAME(504,"用户名必须填写"),
     REQUIRE_PASSWORD(505,"密码必须填写"),
     ACTIVATION_REPEAT(506,"账号重复激活"),
-    ACTIVATION_FAILURE(507,"激活失败");
+    ACTIVATION_FAILURE(507,"激活失败"),
+    NOT_EXIST(508,"数据不存在");
 
     int code;
     String msg;

@@ -45,6 +45,10 @@ public class UserService implements CommunityConstant {
         if (u != null) {
             //但是未激活
             if (u.getStatus() == 0) {
+                //验证邮箱
+                if (user2 != null) {
+                    throw new RuntimeException("邮箱已被注册");
+                }
                 //删除未激活的原账号
                 userMapper.deleteByUserName(u.getUsername());
                 //注册现有新账号
