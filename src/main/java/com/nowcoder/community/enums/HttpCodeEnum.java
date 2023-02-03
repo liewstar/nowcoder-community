@@ -8,7 +8,10 @@ public enum HttpCodeEnum {
     USERNAME_EXIST(501,"用户名已存在"),
     PHONENUMBER_EXIST(502,"手机号已存在"),
     EMAIL_EXIST(503,"邮箱已存在"),
-    REQUIRE_USERNAME(504,"用户名必须填写");
+    REQUIRE_USERNAME(504,"用户名必须填写"),
+    REQUIRE_PASSWORD(505,"密码必须填写"),
+    ACTIVATION_REPEAT(506,"账号重复激活"),
+    ACTIVATION_FAILURE(507,"激活失败");
 
     int code;
     String msg;

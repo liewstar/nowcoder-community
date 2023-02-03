@@ -5,7 +5,6 @@ import com.nowcoder.community.entity.User;
 import com.nowcoder.community.utils.CommunityConstant;
 import com.nowcoder.community.utils.CommunityUtil;
 import com.nowcoder.community.utils.MailClient;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -14,8 +13,6 @@ import org.thymeleaf.context.Context;
 
 import javax.annotation.Resource;
 import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Random;
 
 @Service
@@ -41,59 +38,33 @@ public class UserService implements CommunityConstant {
         return userMapper.selectById(id);
     }
 
-    public Map<String,Object> register(User user) {
-        Map<String,Object> map=new HashMap<>();
-
-        //对空值处理
-        if(user == null) {
-            throw new IllegalArgumentException("参数不能为空!");
-        }
-        if(StringUtils.isBlank(user.getUsername())) {
-            map.put("usernameMsg","账号不能为空!");
-            return map;
-        }
-        if(StringUtils.isBlank(user.getPassword())) {
-            map.put("passwordMsg","密码不能为空!");
-            return map;
-        }
-        if(StringUtils.isBlank(user.getEmail())) {
-            map.put("emailMsg","邮箱不能为空!");
-            return map;
-        }
-
-
-        //验证账号
+    public void register(User user) {
         User u = userMapper.selectByName(user.getUsername());
-        if(u != null) {
+        User user2 = userMapper.selectByEmail(user.getEmail());
+        //验证账户
+        if (u != null) {
+            //但是未激活
             if (u.getStatus() == 0) {
+                //删除未激活的原账号
                 userMapper.deleteByUserName(u.getUsername());
-                User user1 = setRegister(user);
-                userMapper.insertUser(user1);
-                sendActivationMail(user1);
-                return map;
+                //注册现有新账号
+                setRegister(user);
+                userMapper.insertUser(user);
+                //发送注册邮件
+                sendActivationMail(user);
+            } else {
+                throw new RuntimeException("账户已存在");
             }
-            map.put("usernameMsg","该账号已存在");
-            return map;
-        }
-
-        //验证邮箱
-        u = userMapper.selectByEmail(user.getEmail());
-        if(u != null) {
-            if (u.getStatus() == 0) {
-                userMapper.deleteByEmail(u.getEmail());
-                User user1 = setRegister(user);
-                userMapper.insertUser(user1);
-                sendActivationMail(user1);
-                return map;
+        } else {
+            //账号不存在，验证邮箱
+            if (user2 != null) {
+                throw new RuntimeException("邮箱已存在");
+            } else {
+                setRegister(user);
+                userMapper.insertUser(user);
+                sendActivationMail(user);
             }
-            map.put("emailMsg","该邮箱已被注册！");
-            return map;
         }
-
-        User user1 = setRegister(user);
-        userMapper.insertUser(user1);
-        sendActivationMail(user1);
-        return map;
     }
 
     public User setRegister(User user) {
