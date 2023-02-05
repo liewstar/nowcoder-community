@@ -42,6 +42,12 @@ public class LoginController implements CommunityConstant {
         return JsonResult.ok(data);
     }
 
+    @PostMapping("/logout")
+    public JsonResult<Void> logout() {
+        loginService.logout();
+        return JsonResult.ok(null);
+    }
+
 
     //验证码
     @RequestMapping(path = "/kaptcha", method = RequestMethod.GET)
@@ -61,6 +67,5 @@ public class LoginController implements CommunityConstant {
         } catch (IOException e) {
             logger.error("验证码响应失败" + e.getMessage());
         }
-
     }
 }

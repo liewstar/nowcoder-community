@@ -39,7 +39,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .authorizeRequests()
                 .antMatchers("/login").anonymous()
-                .antMatchers("/dicussList").authenticated()
+                .antMatchers("/discussList").authenticated()
+                .antMatchers("/logout").authenticated()
+                .antMatchers("/user/changePassword").authenticated()
                 .anyRequest().permitAll();
         http.logout().disable();
         http.addFilterBefore(jwtAuthenticationTokenFilter, UsernamePasswordAuthenticationFilter.class);

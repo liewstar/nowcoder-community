@@ -26,7 +26,7 @@ public class HomeController {
     @Autowired
     private UserService userService;
 
-    @GetMapping("/dicussList")
+    @GetMapping("/discussList")
     public JsonResult<List> getIndexPage(Page page) {
         page.setRows(discussPostService.findDiscussPostRows(0));
         page.setPath("/index");

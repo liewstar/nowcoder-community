@@ -16,6 +16,7 @@ import org.thymeleaf.context.Context;
 
 import javax.annotation.Resource;
 import java.util.Date;
+import java.util.Objects;
 import java.util.Random;
 
 @Service
@@ -42,6 +43,9 @@ public class RegisterServiceImpl implements CommunityConstant, RegisterService {
 
 
     public void register(User user) {
+        if(Objects.isNull(user.getUsername()) || Objects.isNull(user.getPassword()) || Objects.isNull(user.getEmail())) {
+            throw new RuntimeException("请完善注册信息");
+        }
         User u = userMapper.selectByName(user.getUsername());
         User user2 = userMapper.selectByEmail(user.getEmail());
         //验证账户

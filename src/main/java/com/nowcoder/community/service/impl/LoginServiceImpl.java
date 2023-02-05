@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -24,6 +25,7 @@ public class LoginServiceImpl implements LoginService {
     @Autowired
     private RedisCache redisCache;
 
+    @Override
     public HashMap<String,Object> login(User user) {
         UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken=new UsernamePasswordAuthenticationToken(user.getUsername(),user.getPassword());
         //authenticationManager会自动调用UserDetailsService
@@ -46,5 +48,17 @@ public class LoginServiceImpl implements LoginService {
         data.put("token",jwt);
         data.put("userinfo",json);
         return data;
+    }
+
+    @Override
+    public void logout() {
+        //获取token,解析获取token
+        Authentication authentication= SecurityContextHolder.getContext().getAuthentication();
+        LoginUser loginUser = (LoginUser) authentication.getPrincipal();
+        System.out.println(loginUser.toString());
+        //获取userId
+        int userId = loginUser.getUser().getId();
+        //删除缓存中的userId
+        redisCache.deleteObject("login:"+userId);
     }
 }
