@@ -2,14 +2,14 @@ package com.nowcoder.community.controller;
 
 import com.google.code.kaptcha.Producer;
 import com.nowcoder.community.entity.User;
-import com.nowcoder.community.service.UserService;
+import com.nowcoder.community.service.LoginService;
+import com.nowcoder.community.service.RegisterService;
 import com.nowcoder.community.utils.CommunityConstant;
 import com.nowcoder.community.utils.JsonResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.imageio.ImageIO;
@@ -18,7 +18,7 @@ import javax.servlet.http.HttpSession;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Map;
+import java.util.HashMap;
 
 @RestController
 public class LoginController implements CommunityConstant {
@@ -28,9 +28,19 @@ public class LoginController implements CommunityConstant {
     private Producer kaptcha;
 
     @Autowired
-    private UserService userService;
+    private RegisterService registerService;
 
+    @Autowired
+    private LoginService loginService;
 
+    @PostMapping("/login")
+    public JsonResult<HashMap<String,Object>> login(User user) {
+        if(!StringUtils.hasText(user.getUsername())) {
+            throw new RuntimeException("请输入用户名");
+        }
+        HashMap<String, Object> data = loginService.login(user);
+        return JsonResult.ok(data);
+    }
 
 
     //验证码

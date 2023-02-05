@@ -5,6 +5,7 @@ import com.nowcoder.community.entity.Page;
 import com.nowcoder.community.entity.User;
 import com.nowcoder.community.enums.HttpCodeEnum;
 import com.nowcoder.community.service.DiscussPostService;
+import com.nowcoder.community.service.RegisterService;
 import com.nowcoder.community.service.UserService;
 import com.nowcoder.community.utils.JsonResult;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,8 +28,6 @@ public class HomeController {
 
     @GetMapping("/dicussList")
     public JsonResult<List> getIndexPage(Page page) {
-        System.out.println(page.getCurrent());
-        System.out.println(page.getLimit());
         page.setRows(discussPostService.findDiscussPostRows(0));
         page.setPath("/index");
 //test git2

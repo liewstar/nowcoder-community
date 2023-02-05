@@ -21,7 +21,7 @@
     <select id="selectByName" resultType="User">
         select <include refid="selectFields"></include>
         from user
-        where username = #{username}
+        where username = #{username} and status=1
     </select>
 
     <select id="selectByEmail" resultType="User">
