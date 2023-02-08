@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import javax.swing.text.Position;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
