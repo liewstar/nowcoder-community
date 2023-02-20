@@ -1,11 +1,11 @@
 package com.nowcoder.community.controller;
 
+import com.nowcoder.community.service.UploadService;
 import com.nowcoder.community.service.UserService;
 import com.nowcoder.community.utils.JsonResult;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.web.PortResolverImpl;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 @RestController
@@ -13,10 +13,14 @@ import org.springframework.web.multipart.MultipartFile;
 public class UserController {
     @Autowired
     private UserService userService;
+    @Autowired
+    private UploadService uploadService;
 
     @PostMapping("/uploadImg")
-    public JsonResult<String> uploadImg(MultipartFile img) {
-        return null;
+    public JsonResult<String> uploadImg(@RequestParam("file") MultipartFile img) {
+        System.out.println(img.toString());
+        String url = uploadService.uploadImg(img);
+        return JsonResult.ok(url);
     }
 
     @PostMapping("/changePassword")

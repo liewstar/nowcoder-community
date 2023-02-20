@@ -40,7 +40,6 @@ public class DisucssPostController implements CommunityConstant {
         DiscussPost post = discussPostService.selectDiscussPostById(discussPostId);
         User user = userService.findUserById(post.getUserId());
 
-
         //评论分页信息
         page.setLimit(5);
         page.setPath("/discuss/detail/" + discussPostId);
