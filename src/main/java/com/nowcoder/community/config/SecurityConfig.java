@@ -40,6 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/login").anonymous()
                 .antMatchers("/logout").authenticated()
+                .antMatchers("/comment/add").authenticated()
                 .antMatchers("/user/changePassword").authenticated()
                 .anyRequest().permitAll();
         http.logout().disable();

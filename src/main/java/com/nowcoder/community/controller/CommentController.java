@@ -18,6 +18,7 @@ public class CommentController {
 
     @PostMapping("/add")
     public JsonResult<Void> addComment(Comment comment) {
+        System.out.println(comment.toString());
         commentService.insertComment(comment);
         return JsonResult.ok(null);
     }

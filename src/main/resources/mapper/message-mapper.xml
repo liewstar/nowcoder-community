@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nowcoder.community.dao.MessageMapper">
+    <sql id="selectFields">
+        id, from_id, to_id, conversation_id, content, status, create_time
+    </sql>
+
+    <!--
+    查询的是带一条最新消息的会话列表
+    子查询中 先通过conversation_id把每个会话进行分组
+    然后查询每个分组中id最大的消息即最新消息
+    筛选条件注意过滤已删除的消息和系统通知
+    最后userId的筛选条件有可能是消息的发送方，也有可能是消息的接收方
+    -->
+    <select id="selectConversations" resultType="com.nowcoder.community.entity.Message">
+        select <include refid="selectFields"></include>
+        from message
+        where id in (
+            /*每个会话中的最新消息id*/
+            select max(id) from message
+            where status != 2
+            and from_id != 1
+            and (from_id = #{userId} or to_id = #{userId})
+            group by conversation_id
+        )
+        order by id desc
+        limit #{offset}, #{limit}
+    </select>
+
+    <select id="selectConversationCount" resultType="java.lang.Integer">
+        select count(m.maxid) from (
+                                       select max(id) as maxid from message
+                                       where status != 2
+                                        and from_id != 1
+                                        and (from_id = #{userId} or to_id = #{userId})
+                                       group by conversation_id
+                                       ) as m
+    </select>
+
+    <select id="selectLetters" resultType="com.nowcoder.community.entity.Message">
+        select <include refid="selectFields"></include>
+        from message
+        where status != 2
+        and from_id != 1
+        and conversation_id = #{conversationId}
+        order by id desc
+        limit #{offset}, #{limit}
+    </select>
+
+    <select id="selectLetterCount" resultType="java.lang.Integer">
+        select count(id) from message
+        where status != 2
+        and from_id != 1
+        and conversation_id = #{conversationId}
+    </select>
+
+    <select id="selectLetterUnreadCount" resultType="java.lang.Integer">
+        select count(id)
+        from message
+        where status = 0
+        and from_id != 1
+        and to_id = #{userId}
+        <if test="conversationId!=null">
+            and conversation_id = #{conversationId}
+        </if>
+    </select>
+</mapper>
